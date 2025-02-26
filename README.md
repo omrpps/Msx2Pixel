@@ -50,11 +50,9 @@ The MSX2 was known for its vibrant and distinctive graphics, powered by the Yama
 ### Vista Principal
 ![Vista Principal](images/demo.png)
 
-*(Optional:  Add a section with examples of images before and after conversion to showcase the tool's capabilities. You can use before/after screenshots or even short GIFs.)*
-
 ## ✍️ Author
 
-**Developed with ❤️ by @omrpps 2025**
+**Developed with ❤️ by @omrpps 2025 Oscar Martínez**
 
 ## 📜 License
 
