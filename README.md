@@ -2,10 +2,6 @@
 
 **Transform your images into authentic 8-bit pixel art, MSX2 style!**
 
-![MSX2 Pixel Art Converter Screenshot (Replace with your actual screenshot or GIF)](./screenshot.png)
-
-> *Replace the `screenshot.png` placeholder above with an actual screenshot or a cool GIF of your converter in action!  This is super important for making your README visually appealing.*
-
 ## 🕹️ About
 
 This web application lets you convert your images into pixel art reminiscent of the classic **MSX2 8-bit computer** graphics. Relive the retro aesthetic or prepare your images for your next MSX2 project!  It respects the graphical limitations of the MSX2, using its iconic color palette and screen modes.
