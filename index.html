@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSX2 Pixel Art Converter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and General Styles */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif; /* Modern and clean font */
+            background-color: #121212; /* Dark background for a modern look */
+            color: #ffffff; /* Light text color */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            min-height: 100vh;
+            padding-bottom: 40px; /* Add some padding at the bottom  to ensure footer doesn't overloap content*/;
+        }
+
+        h1 {
+            color: #00bcd4; /* Vibrant accent color */
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        /* Container for canvases */
+        #container {
+            display: flex;
+            flex-wrap: wrap; /* Keep wrap for responsiveness on very small screens */
+            justify-content: center;
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* Canvas Styles */
+         #originalCanvas, #msxCanvas {
+            border: 4px solid #333;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            background-color: #212121;
+            max-width: calc(50% - 15px); /*  Occupy roughly half the container width minus gap */
+            height: auto;
+            flex-grow: 1; /* Allow canvases to grow to fill available space */
+            min-width: 200px; /* Minimum width to avoid collapsing too much */
+        }
+
+        /* Controls Panel */
+        #controls {
+            background-color: #212121; /* Dark control panel background */
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+            padding: 30px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px; /* Wider control panel */
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* Responsive controls layout */
+        @media (min-width: 768px) {
+            #controls {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive columns for controls */
+            }
+            #controls > div:last-child {
+                grid-column: 1 / -1; /* Download button full width */
+                text-align: center;
+            }
+        }
+
+        #controls > div {
+            display: flex;
+            flex-direction: column; /* Stack label and input vertically */
+            gap: 8px; /* Space between label and input */
+            margin-bottom: 0; /* Remove bottom margin from control groups */
+        }
+
+        /* Label Styles */
+        label {
+            font-weight: 600;
+            color: #eee; /* Lighter label color */
+            margin-right: 0; /* Remove right margin from labels */
+            display: block; /* Ensure label takes full width */
+            text-align: left; /* Align labels to the left */
+        }
+
+        /* Input and Select Styles */
+        input[type="file"], select, input[type="number"], input[type="color"] {
+            padding: 12px; /* More padding for inputs */
+            border: 2px solid #555; /* Darker input border */
+            border-radius: 8px; /* More rounded input corners */
+            font-size: 1rem; /* Consistent font size */
+            width: 100%;
+            background-color: #333; /* Darker input background */
+            color: #fff; /* White input text color */
+            appearance: none; /* Remove default styling for selects on some browsers */
+        }
+
+        input[type="file"] {
+            padding: 0; /* Reset padding for file input to style the label */
+            border: none;
+            background-color: transparent;
+        }
+
+        select {
+            cursor: pointer; /* Indicate select is interactive */
+        }
+
+        input[type="color"] {
+            padding: 6px; /* Adjust color input padding */
+            height: auto;
+            width: auto; /* Intrinsic width for color input */
+            max-width: none; /* Remove max-width for color input */
+            cursor: pointer;
+        }
+
+
+        /* Button Styles */
+        button, .file-input-label {
+            background-color: #00bcd4; /* Vibrant button color */
+            color: #121212; /* Dark button text */
+            padding: 12px 20px; /* Button padding */
+            border: none;
+            border-radius: 8px; /* Rounded button corners */
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for button */
+            text-align: center; /* Center text in button */
+            display: inline-block; /* For file input label to behave like button */
+            text-decoration: none; /* Remove underline if used as link */
+        }
+
+        button:hover, .file-input-label:hover {
+            background-color: #008ba7; /* Darker hover color */
+            color: #fff; /* Light text on hover */
+        }
+
+        button:active, .file-input-label:active {
+            background-color: #00778f; /* Even darker active color */
+        }
+
+        /* Custom Palette Container */
+        #paletteContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Smaller color inputs */
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #555; /* Separator for palette */
+        }
+
+        #paletteContainer > div {
+            display: flex;
+            flex-direction: column; /* Stack label and color input vertically */
+            gap: 5px;
+        }
+
+        /* File Input Button (Custom Label) */
+        .file-input-label {
+            margin-bottom: 0; /* Remove bottom margin from file input label */
+            width: 100%; /* Make file input label full width */
+            display: flex;
+            justify-content: center; /* Center the text horizontally */
+            align-items: center; /* Center the text vertically */
+        }
+
+        #controls > div:first-child {
+            flex-direction: column; /* Ensure file input controls are stacked */
+            gap: 10px;
+        }
+
+
+        /* Focus styles for accessibility */
+        input:focus, select:focus, button:focus, .file-input-label:focus {
+            outline: 2px solid #00bcd4; /* Focus outline color */
+            outline-offset: 2px;
+        }
+
+        /* Smaller scale input */
+        #scaleFactor {
+            max-width: 100px; /* Limit width of scale input */
+        }
+
+         /* Footer Styles */
+         footer {
+            position: absolute; /* Fixed position at the bottom */
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem; /* Small font size */
+            color: #777; /* Light gray color for discretion */
+        }
+
+
+    </style>
+</head>
+<body>
+    <h1>MSX2 Pixel Art Converter</h1>
+
+    <div id="controls">
+        <div>
+            <label for="imageLoader">Seleccionar Imagen</label>
+            <label for="imageLoader" class="file-input-label" tabindex="0">
+                Subir Imagen
+            </label>
+            <input type="file" id="imageLoader" accept="image/*">
+        </div>
+
+        <div>
+            <label for="screenMode">Modo de Pantalla</label>
+            <select id="screenMode">
+                <option value="2">SCREEN 2 (256x192, 16 colores)</option>
+                <option value="4">SCREEN 4 (256x192, 16 colores)</option>
+                <option value="5">SCREEN 5 (256x212, 16 colores)</option>
+                <option value="6">SCREEN 6 (512x212, 4 colores)</option>
+                <option value="7">SCREEN 7 (512x212, 16 colores)</option>
+                <option value="8">SCREEN 8 (256x212, 256 colores)</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="dithering">Dithering</label>
+            <select id="dithering">
+                <option value="none">Ninguno</option>
+                <option value="floyd-steinberg">Floyd-Steinberg</option>
+                <option value="bayer">Bayer (Ordered)</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="customPalette">Paleta Personalizada</label>
+            <input type="checkbox" id="customPalette">
+        </div>
+
+        <div id="paletteContainer" style="display: none;">
+            <!-- Color inputs will be inserted here -->
+        </div>
+
+        <div>
+            <label for="scaleFactor">Escala</label>
+            <input type="number" id="scaleFactor" min="1" value="1">
+        </div>
+
+        <div>
+            <button id="downloadButton">Descargar Imagen MSX2</button>
+        </div>
+    </div>
+
+    <div id="container">
+        <canvas id="originalCanvas"></canvas>
+        <canvas id="msxCanvas"></canvas>
+    </div>
+
+
+    <script>
+        // ... (The rest of your JavaScript code remains the same) ...
+        const imageLoader = document.getElementById('imageLoader');
+        const screenModeSelect = document.getElementById('screenMode');
+        const ditheringSelect = document.getElementById('dithering');
+        const customPaletteCheckbox = document.getElementById('customPalette');
+        const paletteContainer = document.getElementById('paletteContainer');
+        const scaleFactorInput = document.getElementById('scaleFactor');
+        const originalCanvas = document.getElementById('originalCanvas');
+        const msxCanvas = document.getElementById('msxCanvas');
+        const originalCtx = originalCanvas.getContext('2d');
+        const msxCtx = msxCanvas.getContext('2d');
+        const downloadButton = document.getElementById('downloadButton');
+
+        let originalImage = new Image();
+        let msxPalette = [];
+        let numColors;
+
+        // Paleta de colores MSX2 (512 colores -  solo algunos representativos para el ejemplo)
+        // Deberías incluir los 512 si quieres precisión total.
+
+        const msx2Palette = [
+            // [R, G, B]
+            [0, 0, 0],       // Negro
+            [85, 85, 85],   // Gris Oscuro
+            [170, 170, 170], // Gris Medio
+            [255, 255, 255], // Blanco
+
+            //más colores representativos
+            [0, 0, 0],     // Black
+            [39, 39, 39],
+            [78, 78, 78],
+            [117, 117, 117],
+            [156, 156, 156],
+            [195, 195, 195],
+            [234, 234, 234],
+            [255, 255, 255],  // White
+            [78, 58, 0],
+            [117, 97, 0],
+            [156, 136, 0],
+            [195, 175, 0],
+            [234, 214, 0],
+            [255, 253, 0],
+            [78, 93, 0],
+            [117, 132, 0],
+            [156, 171, 0],
+            [195, 210, 0],
+            [234, 249, 0],
+            [255, 255, 85], // Yellowish?
+            [0, 70, 15],
+            [0, 109, 46],
+            [0, 148, 78],
+            [0, 187, 109],
+            [0, 226, 140],
+            [0, 255, 170],
+            [0, 64, 83],
+            [0, 103, 115],
+            [0, 142, 146],
+            [0, 181, 177],
+            [0, 220, 209],
+            [0, 255, 240],
+            [78, 0, 59],
+            [117, 0, 98],
+            [156, 0, 138],
+            [195, 0, 177],
+            [234, 0, 216],
+            [255, 0, 255],
+            [78, 0, 0],
+            [117, 0, 0],
+            [156, 0, 0],
+            [195, 0, 0],
+            [234, 0, 0],
+            [255, 0, 0],    // Red
+            [78, 45, 0],
+            [117, 84, 0],
+            [156, 123, 0],
+            [195, 162, 0],
+            [234, 201, 0],
+            [255, 240, 0],
+            [36, 83, 0],
+            [75, 122, 0],
+            [114, 161, 0],
+            [153, 200, 0],
+            [192, 239, 0],
+            [231, 255, 45],
+             [0, 83, 51],
+            [0, 122, 83],
+            [0, 161, 114],
+            [0, 200, 145],
+            [0, 239, 177],
+            [0, 255, 208],
+            [57, 0, 95],
+            [96, 0, 134],
+            [135, 0, 173],
+            [174, 0, 213],
+            [213, 0, 252],
+            [252, 0, 255],
+            [78, 78, 0],
+            [117, 117, 0],
+            [156, 156, 0],
+            [195, 195, 0],
+            [234, 234, 0],
+            [255, 255, 40],
+        ];
+
+
+        // Funciones
+
+        function setupPaletteUI() {
+           paletteContainer.innerHTML = ''; // Limpiar paletas anteriores
+
+            const numInputs = numColors;
+
+           for (let i = 0; i < numInputs; i++) {
+                const colorDiv = document.createElement('div');
+
+                const colorInput = document.createElement('input');
+                colorInput.type = 'color';
+                colorInput.id = `color-${i}`;
+                colorInput.value = rgbToHex(msxPalette[i] || [0, 0, 0]); // Valor por defecto
+
+                 colorInput.addEventListener('change', () => {
+                    msxPalette[i] = hexToRgb(colorInput.value);
+                    drawImageToMSXCanvas();
+                 });
+
+                const label = document.createElement('label');
+                label.htmlFor = `color-${i}`;
+                label.textContent = `Color ${i + 1}:`;
+
+                colorDiv.appendChild(label);
+                colorDiv.appendChild(colorInput);
+                paletteContainer.appendChild(colorDiv);
+            }
+        }
+
+          function hexToRgb(hex) {
+            const r = parseInt(hex.substring(1, 3), 16);
+            const g = parseInt(hex.substring(3, 5), 16);
+            const b = parseInt(hex.substring(5, 7), 16);
+            return [r, g, b];
+        }
+
+        function rgbToHex(rgb) {
+            return "#" + ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]).toString(16).slice(1);
+        }
+
+
+
+        function getMSXColor(r, g, b) {
+            let closestColor = [0, 0, 0];
+            let minDistance = Infinity;
+
+            for (const msxColor of msxPalette) {
+                const distance = Math.sqrt(
+                    Math.pow(r - msxColor[0], 2) +
+                    Math.pow(g - msxColor[1], 2) +
+                    Math.pow(b - msxColor[2], 2)
+                );
+
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestColor = msxColor;
+                }
+            }
+            return closestColor;
+        }
+
+        function applyDithering(imageData, width, height, ditheringType) {
+              if (ditheringType === 'none') return;
+
+                const data = imageData.data;
+
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const i = (y * width + x) * 4;
+
+                        const oldR = data[i];
+                        const oldG = data[i + 1];
+                        const oldB = data[i + 2];
+
+                         //ya tenemos el color más cercano, ahora aplicamos el error
+                        const newColor = getMSXColor(oldR, oldG, oldB);
+
+                        data[i] = newColor[0];
+                        data[i + 1] = newColor[1];
+                        data[i + 2] = newColor[2];
+
+                        //calculamos el error
+                        const errR = oldR - newColor[0];
+                        const errG = oldG - newColor[1];
+                        const errB = oldB - newColor[2];
+
+                         //aplicamos el error
+                        if (ditheringType === 'floyd-steinberg') {
+                            // Floyd-Steinberg dithering
+                            if (x + 1 < width) {
+                                data[i + 4] += Math.round(errR * 7 / 16);
+                                data[i + 5] += Math.round(errG * 7 / 16);
+                                data[i + 6] += Math.round(errB * 7 / 16);
+                            }
+                            if (x - 1 >= 0 && y + 1 < height) {
+                                data[i - 4 + width * 4] += Math.round(errR * 3 / 16);
+                                data[i - 3 + width * 4] += Math.round(errG * 3 / 16);
+                                data[i - 2 + width * 4] += Math.round(errB * 3 / 16);
+                            }
+                            if (y + 1 < height) {
+                                data[i + width * 4] += Math.round(errR * 5 / 16);
+                                data[i + 1 + width * 4] += Math.round(errG * 5 / 16);
+                                data[i + 2 + width * 4] += Math.round(errB * 5 / 16);
+                            }
+                            if (x + 1 < width && y + 1 < height) {
+                                data[i + 4 + width * 4] += Math.round(errR * 1 / 16);
+                                data[i + 5 + width * 4] += Math.round(errG * 1 / 16);
+                                data[i + 6 + width * 4] += Math.round(errB * 1 / 16);
+                            }
+                        } else if (ditheringType === 'bayer') {
+                            // Bayer (Ordered) dithering - Usando una matriz 4x4
+                             const bayerMatrix = [
+                                [1, 9, 3, 11],
+                                [13, 5, 15, 7],
+                                [4, 12, 2, 10],
+                                [16, 8, 14, 6]
+                            ];
+
+                            const threshold = bayerMatrix[x % 4][y % 4];
+
+                            data[i]     += Math.round(errR * threshold / 17);
+                            data[i + 1] += Math.round(errG * threshold / 17);
+                            data[i + 2] += Math.round(errB * threshold / 17);
+                        }
+                    }
+                }
+            }
+
+
+        function drawImageToMSXCanvas() {
+            if (!originalImage.src) return;
+
+            const screenMode = parseInt(screenModeSelect.value);
+            let targetWidth, targetHeight;
+
+            switch (screenMode) {
+                case 2:
+                case 4:
+                    targetWidth = 256;
+                    targetHeight = 192;
+                    numColors = 16;
+                    break;
+                case 5:
+                case 8:
+                    targetWidth = 256;
+                    targetHeight = 212;
+                    numColors = screenMode === 5 ? 16 : 256;
+                    break;
+                case 6:
+                    targetWidth = 512;
+                    targetHeight = 212;
+                    numColors = 4;
+                    break;
+                case 7:
+                    targetWidth = 512;
+                    targetHeight = 212;
+                    numColors = 16;
+                    break;
+            }
+
+
+            const scaleFactor = parseInt(scaleFactorInput.value);
+
+            msxCanvas.width = targetWidth * scaleFactor;
+            msxCanvas.height = targetHeight * scaleFactor;
+
+            // Si no es paleta custom, crear la paleta MSX por defecto
+            if (!customPaletteCheckbox.checked){
+                msxPalette = msx2Palette.slice(0, numColors); // Limitar a la cantidad de colores del modo
+                setupPaletteUI();
+            }
+
+            msxCtx.imageSmoothingEnabled = false; // Importante para pixel art
+
+            // Redimensionar primero a tamaño MSX *sin* escalado
+            msxCtx.drawImage(originalImage, 0, 0, targetWidth, targetHeight);
+
+            const imageData = msxCtx.getImageData(0, 0, targetWidth, targetHeight);
+            const data = imageData.data;
+
+              // Colorizar y aplicar dithering (si corresponde)
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+
+                const msxColor = getMSXColor(r, g, b);
+
+                data[i] = msxColor[0];
+                data[i + 1] = msxColor[1];
+                data[i + 2] = msxColor[2];
+                // No modificamos el alpha (data[i + 3])
+            }
+
+              applyDithering(imageData, targetWidth, targetHeight, ditheringSelect.value);
+              msxCtx.putImageData(imageData, 0, 0); //Ponemos la imagen ya procesada
+
+
+              //Ahora sí, re-escalamos si scaleFactor > 1.  Usamos un canvas auxiliar
+             if (scaleFactor > 1) {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = targetWidth;
+                tempCanvas.height = targetHeight;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.putImageData(imageData, 0, 0);
+
+                msxCtx.scale(scaleFactor, scaleFactor);
+                msxCtx.drawImage(tempCanvas, 0, 0);
+                msxCtx.setTransform(1, 0, 0, 1, 0, 0);  //resetear transform
+              }
+        }
+
+          function downloadImage() {
+                if (!msxCanvas.width) return; // Asegurarse de que haya algo que descargar
+
+                const dataURL = msxCanvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = dataURL;
+                link.download = 'msx_image.png';
+                document.body.appendChild(link); // Necesario en Firefox
+                link.click();
+                document.body.removeChild(link);
+          }
+
+
+        // Event Listeners
+
+          imageLoader.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                originalImage.src = event.target.result;
+                originalImage.onload = () => {
+                    originalCanvas.width = originalImage.width;
+                    originalCanvas.height = originalImage.height;
+                    originalCtx.drawImage(originalImage, 0, 0);
+                    drawImageToMSXCanvas();
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        screenModeSelect.addEventListener('change', () => {
+          if (customPaletteCheckbox.checked){
+                setupPaletteUI();
+            }
+           drawImageToMSXCanvas();
+        });
+
+        ditheringSelect.addEventListener('change', drawImageToMSXCanvas);
+
+        customPaletteCheckbox.addEventListener('change', () => {
+           paletteContainer.style.display = customPaletteCheckbox.checked ? 'block' : 'none';
+            setupPaletteUI();
+            drawImageToMSXCanvas();
+
+        });
+
+        scaleFactorInput.addEventListener('change', drawImageToMSXCanvas);
+        downloadButton.addEventListener('click', downloadImage);
+
+        //Inicializar paleta
+        setupPaletteUI();
+
+    </script>
+    <footer>
+        <p>Desarrollado por <a href="https://x.com/omrpps" target="_blank" rel="noopener">Oscar Martinez</a></p>
+    </footer>
+</body>
+</html>
