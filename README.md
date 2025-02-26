@@ -56,8 +56,6 @@ The MSX2 was known for its vibrant and distinctive graphics, powered by the Yama
 
 ## 📜 License
 
-*(Optional: If you want to add a license, mention it here. For example:)*
-
 This project is open-source and available under the [MIT License](LICENSE).
 
 ## 👍 Feedback & Contributions
