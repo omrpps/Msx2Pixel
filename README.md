@@ -2,9 +2,7 @@
 
 **Transform your images into authentic 8-bit pixel art, MSX2 style!**
 
-![MSX2 Pixel Art Converter Screenshot (Replace with your actual screenshot or GIF)](./msx.png)
-
-> *Replace the `screenshot.png` placeholder above with an actual screenshot or a cool GIF of your converter in action!  This is super important for making your README visually appealing.*
+![MSX2 Pixel Art Converter Screenshot (Replace with your actual screenshot or GIF)](images/msx.png)
 
 ## 🕹️ About
 
