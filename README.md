@@ -49,8 +49,6 @@ SCREEN 8 is the most versatile MSX2 graphics mode, allowing for detailed artwork
 ### Vista Principal
 ![Vista Principal](images/demo-1.png)
 
-*(Optional:  Add a section with examples of images before and after conversion to showcase the tool's capabilities. You can use before/after screenshots or even short GIFs.)*
-
 ## ✍️ Author
 
 **Developed with ❤️ by @omrpps 2025**
