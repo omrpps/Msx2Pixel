@@ -2,7 +2,7 @@
 
 **Transform your images into authentic 8-bit pixel art, MSX2 style!**
 
-![MSX2 Pixel Art Converter Screenshot (Replace with your actual screenshot or GIF)](./screenshot.png)
+![MSX2 Pixel Art Converter Screenshot (Replace with your actual screenshot or GIF)](./msx.png)
 
 > *Replace the `screenshot.png` placeholder above with an actual screenshot or a cool GIF of your converter in action!  This is super important for making your README visually appealing.*
 
@@ -47,7 +47,7 @@ SCREEN 8 is the most versatile MSX2 graphics mode, allowing for detailed artwork
 
 ## 🖼️ Examples
 ### Vista Principal
-![Vista Principal](images/demo.png)
+![Vista Principal](images/demo-1.png)
 
 *(Optional:  Add a section with examples of images before and after conversion to showcase the tool's capabilities. You can use before/after screenshots or even short GIFs.)*
 
