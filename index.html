@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MSX2 Pixel Art Converter</title>
+    <title>MSX2 SCREEN 8 Pixel Art Converter</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -16,222 +16,274 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif; /* Modern and clean font */
-            background-color: #121212; /* Dark background for a modern look */
-            color: #ffffff; /* Light text color */
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 30px;
             min-height: 100vh;
-            padding-bottom: 40px; /* Add some padding at the bottom  to ensure footer doesn't overloap content*/;
+            position: relative;
+            padding: 30px 30px 60px;
         }
 
         h1 {
-            color: #00bcd4; /* Vibrant accent color */
-            margin-bottom: 20px;
+            color: #00bcd4;
+            margin-bottom: 2rem;
             text-align: center;
             font-size: 2.5rem;
             font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 188, 212, 0.2);
         }
 
-        /* Container for canvases */
-        #container {
-            display: flex;
-            flex-wrap: wrap; /* Keep wrap for responsiveness on very small screens */
-            justify-content: center;
-            gap: 30px;
-            max-width: 1200px;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        /* Canvas Styles */
-         #originalCanvas, #msxCanvas {
-            border: 4px solid #333;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            background-color: #212121;
-            max-width: calc(50% - 15px); /*  Occupy roughly half the container width minus gap */
-            height: auto;
-            flex-grow: 1; /* Allow canvases to grow to fill available space */
-            min-width: 200px; /* Minimum width to avoid collapsing too much */
-        }
-
-        /* Controls Panel */
         #controls {
-            background-color: #212121; /* Dark control panel background */
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Deeper shadow */
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 2rem;
+            margin-bottom: 2rem;
             width: 100%;
-            max-width: 800px; /* Wider control panel */
+            max-width: 800px;
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        /* Responsive controls layout */
-        @media (min-width: 768px) {
-            #controls {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive columns for controls */
-            }
-            #controls > div:last-child {
-                grid-column: 1 / -1; /* Download button full width */
-                text-align: center;
-            }
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         #controls > div {
             display: flex;
-            flex-direction: column; /* Stack label and input vertically */
-            gap: 8px; /* Space between label and input */
-            margin-bottom: 0; /* Remove bottom margin from control groups */
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        /* Label Styles */
         label {
-            font-weight: 600;
-            color: #eee; /* Lighter label color */
-            margin-right: 0; /* Remove right margin from labels */
-            display: block; /* Ensure label takes full width */
-            text-align: left; /* Align labels to the left */
-        }
-
-        /* Input and Select Styles */
-        input[type="file"], select, input[type="number"], input[type="color"] {
-            padding: 12px; /* More padding for inputs */
-            border: 2px solid #555; /* Darker input border */
-            border-radius: 8px; /* More rounded input corners */
-            font-size: 1rem; /* Consistent font size */
-            width: 100%;
-            background-color: #333; /* Darker input background */
-            color: #fff; /* White input text color */
-            appearance: none; /* Remove default styling for selects on some browsers */
-        }
-
-        input[type="file"] {
-            padding: 0; /* Reset padding for file input to style the label */
-            border: none;
-            background-color: transparent;
+            font-size: 0.9rem;
+            color: #00bcd4;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
         }
 
         select {
-            cursor: pointer; /* Indicate select is interactive */
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #fff;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            outline: none;
         }
 
-        input[type="color"] {
-            padding: 6px; /* Adjust color input padding */
+        select option {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            padding: 0.75rem;
+        }
+
+        select:hover, input[type="number"]:hover, input[type="range"]:hover {
+            border-color: rgba(0, 188, 212, 0.5);
+        }
+
+        select:focus, input[type="number"]:focus, input[type="range"]:focus {
+            border-color: #00bcd4;
+            box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #00bcd4;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #00acc1;
+            transform: scale(1.1);
+        }
+
+        .file-input-label {
+            background: linear-gradient(45deg, #00bcd4, #00acc1);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-label:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #00acc1, #0097a7);
+        }
+
+        .file-input-label:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #imageLoader {
+            display: none;
+        }
+
+        #uploadStatus {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #00bcd4;
+            display: none;
+        }
+
+        #container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            width: 100%;
             height: auto;
-            width: auto; /* Intrinsic width for color input */
-            max-width: none; /* Remove max-width for color input */
-            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background: #1e1e1e;
+            transition: transform 0.3s ease;
         }
 
+        canvas:hover {
+            transform: scale(1.02);
+        }
 
-        /* Button Styles */
-        button, .file-input-label {
-            background-color: #00bcd4; /* Vibrant button color */
-            color: #121212; /* Dark button text */
-            padding: 12px 20px; /* Button padding */
+        #downloadButton {
+            background: linear-gradient(45deg, #00bcd4, #00acc1);
+            color: white;
             border: none;
-            border-radius: 8px; /* Rounded button corners */
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for button */
-            text-align: center; /* Center text in button */
-            display: inline-block; /* For file input label to behave like button */
-            text-decoration: none; /* Remove underline if used as link */
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            width: 100%;
         }
 
-        button:hover, .file-input-label:hover {
-            background-color: #008ba7; /* Darker hover color */
-            color: #fff; /* Light text on hover */
+        #downloadButton:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        button:active, .file-input-label:active {
-            background-color: #00778f; /* Even darker active color */
-        }
-
-        /* Custom Palette Container */
         #paletteContainer {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Smaller color inputs */
-            gap: 10px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px solid #555; /* Separator for palette */
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
-        #paletteContainer > div {
+        #paletteContainer div {
             display: flex;
-            flex-direction: column; /* Stack label and color input vertically */
-            gap: 5px;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        /* File Input Button (Custom Label) */
-        .file-input-label {
-            margin-bottom: 0; /* Remove bottom margin from file input label */
-            width: 100%; /* Make file input label full width */
-            display: flex;
-            justify-content: center; /* Center the text horizontally */
-            align-items: center; /* Center the text vertically */
+        #paletteContainer input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: transparent;
         }
 
-        #controls > div:first-child {
-            flex-direction: column; /* Ensure file input controls are stacked */
-            gap: 10px;
+        #paletteContainer input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
         }
 
-
-        /* Focus styles for accessibility */
-        input:focus, select:focus, button:focus, .file-input-label:focus {
-            outline: 2px solid #00bcd4; /* Focus outline color */
-            outline-offset: 2px;
+        #paletteContainer input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* Smaller scale input */
-        #scaleFactor {
-            max-width: 100px; /* Limit width of scale input */
+        .value-display {
+            font-size: 0.8rem;
+            color: #aaa;
+            text-align: center;
+            margin-top: 0.25rem;
         }
 
-         /* Footer Styles */
-         footer {
-            position: absolute; /* Fixed position at the bottom */
-            bottom: -10px;
+        footer {
+            position: fixed;
+            bottom: 0;
             left: 0;
             width: 100%;
             text-align: center;
-            font-size: 0.8rem; /* Small font size */
-            color: #777; /* Light gray color for discretion */
+            font-size: 0.8rem;
+            color: #777;
+            background-color: #121212;
+            padding: 10px 0;
+            z-index: 1000;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        footer a {
+            color: #00bcd4;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
 
+        footer a:hover {
+            color: #00acc1;
+        }
+
+        @media (max-width: 768px) {
+            #controls {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            #container {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>MSX2 Pixel Art Converter</h1>
+    <h1>MSX2 SCREEN 8 Pixel Art Converter</h1>
 
     <div id="controls">
         <div>
             <label for="imageLoader">Seleccionar Imagen</label>
-            <label for="imageLoader" class="file-input-label" tabindex="0">
+            <label for="imageLoader" class="file-input-label" tabindex="0" onkeydown="if(event.key === 'Enter' || event.key === ' ') this.click();">
                 Subir Imagen
             </label>
             <input type="file" id="imageLoader" accept="image/*">
-        </div>
-
-        <div>
-            <label for="screenMode">Modo de Pantalla</label>
-            <select id="screenMode">
-                <option value="2">SCREEN 2 (256x192, 16 colores)</option>
-                <option value="4">SCREEN 4 (256x192, 16 colores)</option>
-                <option value="5">SCREEN 5 (256x212, 16 colores)</option>
-                <option value="6">SCREEN 6 (512x212, 4 colores)</option>
-                <option value="7">SCREEN 7 (512x212, 16 colores)</option>
-                <option value="8">SCREEN 8 (256x212, 256 colores)</option>
-            </select>
+            <div id="uploadStatus">Esperando imagen...</div>
         </div>
 
         <div>
@@ -240,7 +292,20 @@
                 <option value="none">Ninguno</option>
                 <option value="floyd-steinberg">Floyd-Steinberg</option>
                 <option value="bayer">Bayer (Ordered)</option>
+                <option value="atkinson">Atkinson</option>
             </select>
+        </div>
+
+        <div>
+            <label for="brightness">Brillo</label>
+            <input type="range" id="brightness" min="-100" max="100" value="0" step="1">
+            <div id="brightnessValue" class="value-display">0</div>
+        </div>
+
+        <div>
+            <label for="contrast">Contraste</label>
+            <input type="range" id="contrast" min="-100" max="100" value="0" step="1">
+            <div id="contrastValue" class="value-display">0</div>
         </div>
 
         <div>
@@ -254,7 +319,7 @@
 
         <div>
             <label for="scaleFactor">Escala</label>
-            <input type="number" id="scaleFactor" min="1" value="1">
+            <input type="number" id="scaleFactor" min="1" value="2" max="8">
         </div>
 
         <div>
@@ -267,11 +332,8 @@
         <canvas id="msxCanvas"></canvas>
     </div>
 
-
     <script>
-        // ... (The rest of your JavaScript code remains the same) ...
         const imageLoader = document.getElementById('imageLoader');
-        const screenModeSelect = document.getElementById('screenMode');
         const ditheringSelect = document.getElementById('dithering');
         const customPaletteCheckbox = document.getElementById('customPalette');
         const paletteContainer = document.getElementById('paletteContainer');
@@ -281,369 +343,378 @@
         const originalCtx = originalCanvas.getContext('2d');
         const msxCtx = msxCanvas.getContext('2d');
         const downloadButton = document.getElementById('downloadButton');
+        const brightnessInput = document.getElementById('brightness');
+        const contrastInput = document.getElementById('contrast');
+        const brightnessValue = document.getElementById('brightnessValue');
+        const contrastValue = document.getElementById('contrastValue');
 
         let originalImage = new Image();
         let msxPalette = [];
-        let numColors;
+        const numColors = 256; // SCREEN 8 siempre tiene 256 colores
+        const targetWidth = 256; // SCREEN 8 resolution
+        const targetHeight = 212;
 
-        // Paleta de colores MSX2 (512 colores -  solo algunos representativos para el ejemplo)
-        // Deberías incluir los 512 si quieres precisión total.
+        // Función para generar la paleta completa de 512 colores MSX2
+        function generateMSX2Palette() {
+            const palette = [];
+            // SCREEN 8 mode uses a fixed 256-color palette
+            // Each byte represents one pixel with the following bit distribution:
+            // Red: bits 0-2 (0-7)
+            // Green: bits 3-5 (0-7)
+            // Blue: bits 6-7 (0-3)
+            for (let i = 0; i < 256; i++) {
+                const r = i & 0x07;         // Extract red component (bits 0-2)
+                const g = (i >> 3) & 0x07;   // Extract green component (bits 3-5)
+                const b = (i >> 6) & 0x03;   // Extract blue component (bits 6-7)
 
-        const msx2Palette = [
-            // [R, G, B]
-            [0, 0, 0],       // Negro
-            [85, 85, 85],   // Gris Oscuro
-            [170, 170, 170], // Gris Medio
-            [255, 255, 255], // Blanco
+                // Convert the components to actual RGB values (0-255)
+                const red = Math.floor((r * 255) / 7);
+                const green = Math.floor((g * 255) / 7);
+                const blue = Math.floor((b * 255) / 3);
 
-            //más colores representativos
-            [0, 0, 0],     // Black
-            [39, 39, 39],
-            [78, 78, 78],
-            [117, 117, 117],
-            [156, 156, 156],
-            [195, 195, 195],
-            [234, 234, 234],
-            [255, 255, 255],  // White
-            [78, 58, 0],
-            [117, 97, 0],
-            [156, 136, 0],
-            [195, 175, 0],
-            [234, 214, 0],
-            [255, 253, 0],
-            [78, 93, 0],
-            [117, 132, 0],
-            [156, 171, 0],
-            [195, 210, 0],
-            [234, 249, 0],
-            [255, 255, 85], // Yellowish?
-            [0, 70, 15],
-            [0, 109, 46],
-            [0, 148, 78],
-            [0, 187, 109],
-            [0, 226, 140],
-            [0, 255, 170],
-            [0, 64, 83],
-            [0, 103, 115],
-            [0, 142, 146],
-            [0, 181, 177],
-            [0, 220, 209],
-            [0, 255, 240],
-            [78, 0, 59],
-            [117, 0, 98],
-            [156, 0, 138],
-            [195, 0, 177],
-            [234, 0, 216],
-            [255, 0, 255],
-            [78, 0, 0],
-            [117, 0, 0],
-            [156, 0, 0],
-            [195, 0, 0],
-            [234, 0, 0],
-            [255, 0, 0],    // Red
-            [78, 45, 0],
-            [117, 84, 0],
-            [156, 123, 0],
-            [195, 162, 0],
-            [234, 201, 0],
-            [255, 240, 0],
-            [36, 83, 0],
-            [75, 122, 0],
-            [114, 161, 0],
-            [153, 200, 0],
-            [192, 239, 0],
-            [231, 255, 45],
-             [0, 83, 51],
-            [0, 122, 83],
-            [0, 161, 114],
-            [0, 200, 145],
-            [0, 239, 177],
-            [0, 255, 208],
-            [57, 0, 95],
-            [96, 0, 134],
-            [135, 0, 173],
-            [174, 0, 213],
-            [213, 0, 252],
-            [252, 0, 255],
-            [78, 78, 0],
-            [117, 117, 0],
-            [156, 156, 0],
-            [195, 195, 0],
-            [234, 234, 0],
-            [255, 255, 40],
-        ];
+                palette.push([red, green, blue]);
+            }
+            return palette;
+        }
 
-
-        // Funciones
-
+        const msx2Palette = generateMSX2Palette();
+        
         function setupPaletteUI() {
-           paletteContainer.innerHTML = ''; // Limpiar paletas anteriores
+            paletteContainer.innerHTML = '';
+            const numInputs = Math.min(numColors, 32);
 
-            const numInputs = numColors;
-
-           for (let i = 0; i < numInputs; i++) {
+            for (let i = 0; i < numInputs; i++) {
                 const colorDiv = document.createElement('div');
-
                 const colorInput = document.createElement('input');
                 colorInput.type = 'color';
                 colorInput.id = `color-${i}`;
-                colorInput.value = rgbToHex(msxPalette[i] || [0, 0, 0]); // Valor por defecto
+                colorInput.value = rgbToHex(msxPalette[i] || [0, 0, 0]);
 
-                 colorInput.addEventListener('change', () => {
+                colorInput.addEventListener('change', () => {
                     msxPalette[i] = hexToRgb(colorInput.value);
                     drawImageToMSXCanvas();
-                 });
+                });
 
                 const label = document.createElement('label');
+                label.textContent = `Color ${i+1}`;
                 label.htmlFor = `color-${i}`;
-                label.textContent = `Color ${i + 1}:`;
-
                 colorDiv.appendChild(label);
                 colorDiv.appendChild(colorInput);
                 paletteContainer.appendChild(colorDiv);
             }
         }
 
-          function hexToRgb(hex) {
-            const r = parseInt(hex.substring(1, 3), 16);
-            const g = parseInt(hex.substring(3, 5), 16);
-            const b = parseInt(hex.substring(5, 7), 16);
-            return [r, g, b];
-        }
+        function applyBrightnessContrast(imageData, brightness, contrast) {
+            const data = imageData.data;
+            brightness = brightness / 100;
+            contrast = parseInt(contrastInput.value);
+            const contrastValue = contrast / 100; // Convertir a rango -1 a 1
+            const factor = (1 + contrastValue) / (1 - contrastValue);
 
-        function rgbToHex(rgb) {
-            return "#" + ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]).toString(16).slice(1);
-        }
+            for (let i = 0; i < data.length; i += 4) {
+                // Apply contrast first
+                data[i] = Math.round(Math.min(255, Math.max(0, factor * (data[i] - 127.5) + 127.5)));
+                data[i + 1] = Math.round(Math.min(255, Math.max(0, factor * (data[i + 1] - 127.5) + 127.5)));
+                data[i + 2] = Math.round(Math.min(255, Math.max(0, factor * (data[i + 2] - 127.5) + 127.5)));
 
+                // Then apply brightness
+                data[i] += 255 * brightness;
+                data[i + 1] += 255 * brightness;
+                data[i + 2] += 255 * brightness;
 
-
-        function getMSXColor(r, g, b) {
-            let closestColor = [0, 0, 0];
-            let minDistance = Infinity;
-
-            for (const msxColor of msxPalette) {
-                const distance = Math.sqrt(
-                    Math.pow(r - msxColor[0], 2) +
-                    Math.pow(g - msxColor[1], 2) +
-                    Math.pow(b - msxColor[2], 2)
-                );
-
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestColor = msxColor;
-                }
+                // Ensure values stay within bounds
+                data[i] = Math.min(255, Math.max(0, data[i]));
+                data[i + 1] = Math.min(255, Math.max(0, data[i + 1]));
+                data[i + 2] = Math.min(255, Math.max(0, data[i + 2]));
             }
-            return closestColor;
+            return imageData;
         }
-
-        function applyDithering(imageData, width, height, ditheringType) {
-              if (ditheringType === 'none') return;
-
-                const data = imageData.data;
-
-                for (let y = 0; y < height; y++) {
-                    for (let x = 0; x < width; x++) {
-                        const i = (y * width + x) * 4;
-
-                        const oldR = data[i];
-                        const oldG = data[i + 1];
-                        const oldB = data[i + 2];
-
-                         //ya tenemos el color más cercano, ahora aplicamos el error
-                        const newColor = getMSXColor(oldR, oldG, oldB);
-
-                        data[i] = newColor[0];
-                        data[i + 1] = newColor[1];
-                        data[i + 2] = newColor[2];
-
-                        //calculamos el error
-                        const errR = oldR - newColor[0];
-                        const errG = oldG - newColor[1];
-                        const errB = oldB - newColor[2];
-
-                         //aplicamos el error
-                        if (ditheringType === 'floyd-steinberg') {
-                            // Floyd-Steinberg dithering
-                            if (x + 1 < width) {
-                                data[i + 4] += Math.round(errR * 7 / 16);
-                                data[i + 5] += Math.round(errG * 7 / 16);
-                                data[i + 6] += Math.round(errB * 7 / 16);
-                            }
-                            if (x - 1 >= 0 && y + 1 < height) {
-                                data[i - 4 + width * 4] += Math.round(errR * 3 / 16);
-                                data[i - 3 + width * 4] += Math.round(errG * 3 / 16);
-                                data[i - 2 + width * 4] += Math.round(errB * 3 / 16);
-                            }
-                            if (y + 1 < height) {
-                                data[i + width * 4] += Math.round(errR * 5 / 16);
-                                data[i + 1 + width * 4] += Math.round(errG * 5 / 16);
-                                data[i + 2 + width * 4] += Math.round(errB * 5 / 16);
-                            }
-                            if (x + 1 < width && y + 1 < height) {
-                                data[i + 4 + width * 4] += Math.round(errR * 1 / 16);
-                                data[i + 5 + width * 4] += Math.round(errG * 1 / 16);
-                                data[i + 6 + width * 4] += Math.round(errB * 1 / 16);
-                            }
-                        } else if (ditheringType === 'bayer') {
-                            // Bayer (Ordered) dithering - Usando una matriz 4x4
-                             const bayerMatrix = [
-                                [1, 9, 3, 11],
-                                [13, 5, 15, 7],
-                                [4, 12, 2, 10],
-                                [16, 8, 14, 6]
-                            ];
-
-                            const threshold = bayerMatrix[x % 4][y % 4];
-
-                            data[i]     += Math.round(errR * threshold / 17);
-                            data[i + 1] += Math.round(errG * threshold / 17);
-                            data[i + 2] += Math.round(errB * threshold / 17);
-                        }
-                    }
-                }
-            }
-
 
         function drawImageToMSXCanvas() {
             if (!originalImage.src) return;
 
-            const screenMode = parseInt(screenModeSelect.value);
-            let targetWidth, targetHeight;
-
-            switch (screenMode) {
-                case 2:
-                case 4:
-                    targetWidth = 256;
-                    targetHeight = 192;
-                    numColors = 16;
-                    break;
-                case 5:
-                case 8:
-                    targetWidth = 256;
-                    targetHeight = 212;
-                    numColors = screenMode === 5 ? 16 : 256;
-                    break;
-                case 6:
-                    targetWidth = 512;
-                    targetHeight = 212;
-                    numColors = 4;
-                    break;
-                case 7:
-                    targetWidth = 512;
-                    targetHeight = 212;
-                    numColors = 16;
-                    break;
-            }
-
-
-            const scaleFactor = parseInt(scaleFactorInput.value);
-
+            // Set canvas dimensions to MSX2 SCREEN 8 resolution
+            const scaleFactor = parseInt(scaleFactorInput.value) || 2;
+            originalCanvas.width = targetWidth;
+            originalCanvas.height = targetHeight;
             msxCanvas.width = targetWidth * scaleFactor;
             msxCanvas.height = targetHeight * scaleFactor;
 
-            // Si no es paleta custom, crear la paleta MSX por defecto
-            if (!customPaletteCheckbox.checked){
-                msxPalette = msx2Palette.slice(0, numColors); // Limitar a la cantidad de colores del modo
-                setupPaletteUI();
+            // Draw and scale original image
+            originalCtx.drawImage(originalImage, 0, 0, targetWidth, targetHeight);
+            
+            // Get image data and apply brightness/contrast
+            let imageData = originalCtx.getImageData(0, 0, targetWidth, targetHeight);
+            imageData = applyBrightnessContrast(imageData, 
+                parseInt(brightnessInput.value), 
+                parseInt(contrastInput.value)
+            );
+            
+            // Apply the modified image data back to the canvas
+            originalCtx.putImageData(imageData, 0, 0);
+
+            // Apply dithering if selected
+            const ditheringMethod = ditheringSelect.value;
+            if (ditheringMethod === 'bayer') {
+                applyBayerDithering(imageData);
+            } else if (ditheringMethod !== 'none') {
+                applyDithering(imageData, ditheringMethod);
             }
 
-            msxCtx.imageSmoothingEnabled = false; // Importante para pixel art
-
-            // Redimensionar primero a tamaño MSX *sin* escalado
-            msxCtx.drawImage(originalImage, 0, 0, targetWidth, targetHeight);
-
-            const imageData = msxCtx.getImageData(0, 0, targetWidth, targetHeight);
-            const data = imageData.data;
-
-              // Colorizar y aplicar dithering (si corresponde)
-            for (let i = 0; i < data.length; i += 4) {
-                const r = data[i];
-                const g = data[i + 1];
-                const b = data[i + 2];
-
-                const msxColor = getMSXColor(r, g, b);
-
-                data[i] = msxColor[0];
-                data[i + 1] = msxColor[1];
-                data[i + 2] = msxColor[2];
-                // No modificamos el alpha (data[i + 3])
-            }
-
-              applyDithering(imageData, targetWidth, targetHeight, ditheringSelect.value);
-              msxCtx.putImageData(imageData, 0, 0); //Ponemos la imagen ya procesada
-
-
-              //Ahora sí, re-escalamos si scaleFactor > 1.  Usamos un canvas auxiliar
-             if (scaleFactor > 1) {
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = targetWidth;
-                tempCanvas.height = targetHeight;
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCtx.putImageData(imageData, 0, 0);
-
-                msxCtx.scale(scaleFactor, scaleFactor);
-                msxCtx.drawImage(tempCanvas, 0, 0);
-                msxCtx.setTransform(1, 0, 0, 1, 0, 0);  //resetear transform
-              }
+            // Convert to MSX2 palette
+            const msxImageData = convertToMSX2Palette(imageData);
+            
+            // Create a temporary canvas for scaling
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = targetWidth;
+            tempCanvas.height = targetHeight;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.putImageData(msxImageData, 0, 0);
+            
+            // Scale up the MSX image with nearest-neighbor interpolation
+            msxCtx.imageSmoothingEnabled = false;
+            msxCtx.drawImage(tempCanvas, 0, 0, msxCanvas.width, msxCanvas.height);
         }
 
-          function downloadImage() {
-                if (!msxCanvas.width) return; // Asegurarse de que haya algo que descargar
-
-                const dataURL = msxCanvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.href = dataURL;
-                link.download = 'msx_image.png';
-                document.body.appendChild(link); // Necesario en Firefox
-                link.click();
-                document.body.removeChild(link);
-          }
-
-
-        // Event Listeners
-
-          imageLoader.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                originalImage.src = event.target.result;
-                originalImage.onload = () => {
-                    originalCanvas.width = originalImage.width;
-                    originalCanvas.height = originalImage.height;
-                    originalCtx.drawImage(originalImage, 0, 0);
-                    drawImageToMSXCanvas();
-                };
-            };
-            reader.readAsDataURL(file);
-        });
-
-        screenModeSelect.addEventListener('change', () => {
-          if (customPaletteCheckbox.checked){
-                setupPaletteUI();
-            }
-           drawImageToMSXCanvas();
-        });
-
-        ditheringSelect.addEventListener('change', drawImageToMSXCanvas);
-
-        customPaletteCheckbox.addEventListener('change', () => {
-           paletteContainer.style.display = customPaletteCheckbox.checked ? 'block' : 'none';
-            setupPaletteUI();
+        // Event listeners for brightness and contrast controls
+        brightnessInput.addEventListener('input', function() {
+            brightnessValue.textContent = this.value;
             drawImageToMSXCanvas();
-
         });
 
-        scaleFactorInput.addEventListener('change', drawImageToMSXCanvas);
-        downloadButton.addEventListener('click', downloadImage);
+        contrastInput.addEventListener('input', function() {
+            contrastValue.textContent = this.value;
+            drawImageToMSXCanvas();
+        });
 
-        //Inicializar paleta
-        setupPaletteUI();
+        // Image upload handler
+        imageLoader.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    originalImage.onload = function() {
+                        drawImageToMSXCanvas();
+                    };
+                    originalImage.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
+        function applyBayerDithering(imageData) {
+            const bayerMatrix = [
+                [ 0,  8,  2, 10],
+                [12,  4, 14,  6],
+                [ 3, 11,  1,  9],
+                [15,  7, 13,  5]
+            ];
+
+            const width = imageData.width;
+            const height = imageData.height;
+            const data = imageData.data;
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const i = (y * width + x) * 4;
+                    const threshold = (bayerMatrix[y % 4][x % 4] / 16) - 0.5;
+
+                    // Apply dithering threshold
+                    data[i] = Math.max(0, Math.min(255, data[i] + threshold * 32));
+                    data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + threshold * 32));
+                    data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + threshold * 16)); // Less dithering for blue
+                }
+            }
+
+            return imageData;
+        }
+
+        function applyDithering(imageData, method) {
+            const width = imageData.width;
+            const height = imageData.height;
+            const data = imageData.data;
+
+            switch (method) {
+                case 'floyd-steinberg':
+                    for (let y = 0; y < height; y++) {
+                        for (let x = 0; x < width; x++) {
+                            const i = (y * width + x) * 4;
+                            const oldR = data[i];
+                            const oldG = data[i + 1];
+                            const oldB = data[i + 2];
+
+                            const newRGB = findClosestMSX2Color([oldR, oldG, oldB]);
+                            const errR = oldR - newRGB[0];
+                            const errG = oldG - newRGB[1];
+                            const errB = oldB - newRGB[2];
+
+                            data[i] = newRGB[0];
+                            data[i + 1] = newRGB[1];
+                            data[i + 2] = newRGB[2];
+
+                            if (x + 1 < width) {
+                                data[(y * width + x + 1) * 4] += errR * 7/16;
+                                data[(y * width + x + 1) * 4 + 1] += errG * 7/16;
+                                data[(y * width + x + 1) * 4 + 2] += errB * 7/16;
+                            }
+                            if (y + 1 < height) {
+                                if (x > 0) {
+                                    data[((y + 1) * width + x - 1) * 4] += errR * 3/16;
+                                    data[((y + 1) * width + x - 1) * 4 + 1] += errG * 3/16;
+                                    data[((y + 1) * width + x - 1) * 4 + 2] += errB * 3/16;
+                                }
+                                data[((y + 1) * width + x) * 4] += errR * 5/16;
+                                data[((y + 1) * width + x) * 4 + 1] += errG * 5/16;
+                                data[((y + 1) * width + x) * 4 + 2] += errB * 5/16;
+                                if (x + 1 < width) {
+                                    data[((y + 1) * width + x + 1) * 4] += errR * 1/16;
+                                    data[((y + 1) * width + x + 1) * 4 + 1] += errG * 1/16;
+                                    data[((y + 1) * width + x + 1) * 4 + 2] += errB * 1/16;
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case 'bayer':
+                    applyBayerDithering(imageData);
+                    break;
+
+                case 'atkinson':
+                    for (let y = 0; y < height; y++) {
+                        for (let x = 0; x < width; x++) {
+                            const i = (y * width + x) * 4;
+                            const oldR = data[i];
+                            const oldG = data[i + 1];
+                            const oldB = data[i + 2];
+
+                            const newRGB = findClosestMSX2Color([oldR, oldG, oldB]);
+                            const errR = (oldR - newRGB[0]) / 8;
+                            const errG = (oldG - newRGB[1]) / 8;
+                            const errB = (oldB - newRGB[2]) / 8;
+
+                            data[i] = newRGB[0];
+                            data[i + 1] = newRGB[1];
+                            data[i + 2] = newRGB[2];
+
+                            const pattern = [[1,0], [2,0], [-1,1], [0,1], [1,1], [0,2]];
+                            pattern.forEach(([dx, dy]) => {
+                                const nx = x + dx;
+                                const ny = y + dy;
+                                if (nx >= 0 && nx < width && ny < height) {
+                                    const ni = (ny * width + nx) * 4;
+                                    data[ni] += errR;
+                                    data[ni + 1] += errG;
+                                    data[ni + 2] += errB;
+                                }
+                            });
+                        }
+                    }
+                    break;
+            }
+            return imageData;
+        }
+
+        function findClosestMSX2Color(rgb) {
+            // Normalize RGB components (0-255)
+            let [r, g, b] = rgb;
+
+            // Apply PAL/NTSC compensation
+            // PAL systems typically need slight adjustments
+            r = Math.floor(r * 0.95); // Compensate for PAL red
+            b = Math.floor(b * 1.05); // Compensate for PAL blue
+
+            // Bit reduction for MSX2 Screen 8 format
+            const r_msx = (r >> 5) & 0x07;  // 3 bits (0-7) for red
+            const g_msx = (g >> 5) & 0x07;  // 3 bits (0-7) for green
+            const b_msx = (b >> 6) & 0x03;  // 2 bits (0-3) for blue
+
+            // Pack into MSX2 byte format (RRRGGGBB)
+            const msxByte = r_msx | (g_msx << 3) | (b_msx << 6);
+
+            // Convert back to RGB (0-255)
+            const red = (r_msx << 5) | (r_msx << 2) | (r_msx >> 1);
+            const green = (g_msx << 5) | (g_msx << 2) | (g_msx >> 1);
+            const blue = (b_msx << 6) | (b_msx << 4) | (b_msx << 2) | b_msx;
+
+            return [red, green, blue];
+        }
+
+        function convertToMSX2Palette(imageData) {
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const rgb = findClosestMSX2Color([data[i], data[i + 1], data[i + 2]]);
+                data[i] = rgb[0];
+                data[i + 1] = rgb[1];
+                data[i + 2] = rgb[2];
+                // Alpha channel remains unchanged
+            }
+            return imageData;
+        }
+
+        function rgbToHex(rgb) {
+            return '#' + rgb.map(x => {
+                const hex = Math.max(0, Math.min(255, Math.round(x))).toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            }).join('');
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? [
+                parseInt(result[1], 16),
+                parseInt(result[2], 16),
+                parseInt(result[3], 16)
+            ] : [0, 0, 0];
+        }
+        // Setup custom palette checkbox
+        customPaletteCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                paletteContainer.style.display = 'grid';
+                // Initialize custom palette with MSX2 colors
+                msxPalette = msx2Palette.slice(0, Math.min(numColors, 32));
+                setupPaletteUI();
+            } else {
+                paletteContainer.style.display = 'none';
+                msxPalette = [];
+                drawImageToMSXCanvas();
+            }
+        });
+
+        // Download button functionality
+        downloadButton.addEventListener('click', function() {
+            if (!originalImage.src) {
+                alert('Por favor, carga una imagen primero.');
+                return;
+            }
+
+            const scaleFactor = parseInt(scaleFactorInput.value) || 2;
+            const downloadCanvas = document.createElement('canvas');
+            downloadCanvas.width = targetWidth * scaleFactor;
+            downloadCanvas.height = targetHeight * scaleFactor;
+            const downloadCtx = downloadCanvas.getContext('2d');
+
+            // Scale up the MSX image with nearest-neighbor interpolation for pixel art
+            downloadCtx.imageSmoothingEnabled = false;
+            downloadCtx.drawImage(msxCanvas, 0, 0, downloadCanvas.width, downloadCanvas.height);
+
+            // Create download link
+            const link = document.createElement('a');
+            link.download = 'msx2_screen8_image.png';
+            link.href = downloadCanvas.toDataURL('image/png');
+            link.click();
+        });
+
+        // Initialize with default MSX2 palette
+        msxPalette = msx2Palette.slice(0, Math.min(numColors, 32));
+
+        // Add information about MSX2 SCREEN 8 mode in the footer
+        const footer = document.createElement('footer');
+        footer.innerHTML = `
+            <p>MSX2 SCREEN 8: 256×212 píxeles, 256 colores simultáneos</p>
+            <p>Creado por <a href="https://www.linkedin.com/in/oscar-martinez-43327686/" target="_blank">Oscar Martinez</a></p>
+        `;
+        document.body.appendChild(footer);
     </script>
-    <footer>
-        <p>Desarrollado por <a href="https://x.com/omrpps" target="_blank" rel="noopener">Oscar Martinez</a></p>
-    </footer>
 </body>
 </html>
